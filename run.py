@@ -86,6 +86,7 @@ def update_en(en_config, target_page_url, build_path):
 	Args:
 		en_config.user {string} The account to login en
 		en_config.password {string} The account to login en
+		en_config.account {string} If your account have more than one region, use this value to specify which account to use.
 		target_page_url {string} The en edit url of target page. ex. https://www.e-activist.com/index.html#pages/54302/edit
 		build_path {string} The dir path to build folder. The build/index.html is required.
 	"""
@@ -122,6 +123,27 @@ def update_en(en_config, target_page_url, build_path):
 	username.send_keys(en_config["user"])
 	password.send_keys(en_config["password"])
 	driver.find_element_by_css_selector('.button.button--login').click()
+
+	# wait two conditions
+	found_choose_user = False
+	while True: # wait one of following
+		found_choose_user = driver.find_elements(By.CSS_SELECTOR, ".userInput--selectUser")
+		if len(found_choose_user)>0:
+			break;
+
+		found_edit_screen = driver.find_elements(By.CSS_SELECTOR, ".pboPB__button.pboPB__button--template")
+		if len(found_edit_screen)>0:
+			break;
+
+	if found_choose_user: # selec user
+		logger.debug("Selecting User %s" % (en_config["account"]))
+		driver.find_element(By.CSS_SELECTOR, ".userInput--selectUser .chosen-container-single").click()
+		time.sleep(1)
+		driver.find_element(By.CSS_SELECTOR, ".userInput--selectUser .chosen-drop input").send_keys(en_config["account"])
+		time.sleep(1)
+		driver.find_element(By.CSS_SELECTOR, ".userInput--selectUser .chosen-results li").click()
+		time.sleep(1)
+		driver.find_element(By.CSS_SELECTOR, ".enLogin__form--selectUser .button--login").click()
 
 	logger.debug("Waiting the editing screen to show")
 	el = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".pboPB__button.pboPB__button--template")))

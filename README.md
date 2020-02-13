@@ -1,42 +1,56 @@
-# gpea-update-builds-to-en
 
-This script upadte your `build` folder to Engaging Network.
 
-It does following things:
+# Sample Config file
 
-1. Upload `build` folder to FTP site.
-2. Read `build/index.html` and update header/footer part of specific page on Engaging Network.
-
-# Setup
-
-## Install dependencies
+Name this config file as `.enuploader` and put it next by your `package.json` file.
 ```
-pip install -r requirements.txt
-```
+module.exports = {
+  "buildFolder": "build", // the build folder to update
+  "enPageId": "56093",
 
-## Setup Chrome Driver
-1. Please find your drive at [https://chromedriver.chromium.org/downloads](https://chromedriver.chromium.org/downloads).
-2. Download the drive and put `chromedriver` next by this script.
-
-## Setup login accounts and variables
-
-```
-cp config.sample.py config.py
-```
-
-Please update the ftp and en variables in the file `config.py`
-
-# Run
-
-Execute this script by
-
-```
-python run.py
+  "syncFolder": {
+    "doUpdate": false,
+    "host": "127.0.0.1",
+    "protocol": "ftp", // sftp or ftp
+    "port": 21,
+    "username": "up",
+    "password": "theup",
+    "remoteDir": "/2020/uploader/56093"
+  },
+  "en": {
+    "doUpdate": true,
+    "enPageId": 56093, // the target page id on the en
+    "username": "up.chen@greenpeace.org",
+    "password": "",
+    "account": "Greenpeace Taiwan" // Greenpeace Taiwan, Greenpeace Korea, Greenpeace Hong Kong
+  }
+}
 ```
 
+# Install LFTP
+@see https://www.npmjs.com/package/ftps
 
-# TODO
 
-* Actually this script should be written in javascript. Thus we can integrate into npm command
-* Update the thank you mail in en.
-* Update the social shares in en.
+Windows (Chocolatey)
+
+```
+C:\> choco install lftp
+```
+
+OSX (Homebrew)
+```
+sudo brew install lftp
+```
+
+Linux
+```
+sudo apt-get install lftp
+# or
+sudo yum install lftp
+```
+
+# Download Selenium Driver
+
+@see https://www.npmjs.com/package/selenium-webdriver
+
+Put the `chromedriver` next to your `package.json` file.

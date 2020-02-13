@@ -1,0 +1,11 @@
+{
+  "name": "gpea-npm-en-uploader",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "bin": "cli.js",
+  "dependencies": {
+    "ftps": "^1.1.1",
+    "selenium-webdriver": "3"
+  }
+}

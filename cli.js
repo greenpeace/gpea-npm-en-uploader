@@ -7,6 +7,7 @@ const path = require('path');
 var workingDir = process.cwd()
 var settings = require(path.join(workingDir, ".enuploader"));
 const buildFolderPath = path.join(workingDir, settings.buildFolder)
+const emailPath = settings.emailFile ? path.join(workingDir, settings.emailFile) : null
 // console.log('settings', settings)
 
 if (settings.syncFolder.doUpdate) {
@@ -19,4 +20,8 @@ if (settings.syncFolder.doUpdate) {
 
 
 const handle_en = require('./handle_en.js')
-handle_en(settings.en, buildFolderPath)
+handle_en({
+	settings: settings.en,
+	buildDir: buildFolderPath,
+	emailPath: emailPath
+})

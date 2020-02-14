@@ -38,7 +38,6 @@ const self = module.exports = {
 		let founds = await driver.findElements(By.css(selector))
 
 		if ( !safe) {
-			console.log("Use not safe selector")
 			return founds.length ? founds[founds.length-1] : null
 		}
 
@@ -60,7 +59,7 @@ const self = module.exports = {
 	 * @return {mixed} WebElement if clicked. Or null
 	 */
 	clickElementSafely: async function (driver, selector) {
-		let el = await self.findElementSafely(driver, selector)
+		let el = await self.findElementSafely(driver, selector, safe=false)
 
 		if (el) {
 			let clicked = false
@@ -75,6 +74,8 @@ const self = module.exports = {
 						// Other element would receive the click: <div class="enOverlay__popup__header">...</div>
 					} else if (e.message.indexOf("element not interactable")>-1) {
 						// ElementNotVisibleError: element not interactable
+					} else if (e.message.indexOf("element is not attached to the page document")>-1) {
+						// StaleElementReferenceError: stale element reference: element is not attached to the page document
 					} else {
 						throw e
 					}

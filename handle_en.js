@@ -56,14 +56,15 @@ const enlogin = async function (driver, settings) {
  * @param  {string} buildDir The dir path to the folder which contains the index.html file
  */
 const enUpdateTmplHeaderFooter = async function (driver, settings, buildDir) {
+	console.log("Start to upadte the header and footer")
 	console.log("Fetching header and footer from build folder")
 
 	let content = fs.readFileSync(path.join(buildDir, 'index.html'), 'utf8');
-	let matches = content.match(/(.*)(<form[^<]+en__component.*form>)(.*)/)
+	let matches = content.match(/((.|[\r\n])*)(<form[^<]+en__component.*form>)((.|[\r\n])*)/)
 	let header, footer
 	if (matches) {
 		header = matches[1]
-		footer = matches[3]
+		footer = matches[4]
 	} else {
 		throw new Error(`Cannot resolve header and footer from file ${path.join(buildDir, 'index.html')}`)
 	}
@@ -94,6 +95,7 @@ const enUpdateTmplHeaderFooter = async function (driver, settings, buildDir) {
 	el.sendKeys(Key.chord(controlKey(), "a"))
 	el.sendKeys(Key.DELETE)
 	await sleep(500)
+
 
 	let jscmd = `document.querySelector('.pboTemplate__editor--header .ace_text-input').value = ${JSON.stringify(header)}`
 	driver.executeScript(jscmd);
@@ -146,6 +148,8 @@ const enUpdateThankyouEmail = async function (driver, settings, emailPath) {
 	if ( !emailPath) {
 		return;
 	}
+
+	console.log("Start to upadte the thank you email content")
 
 	let content = fs.readFileSync((emailPath), 'utf8');
 

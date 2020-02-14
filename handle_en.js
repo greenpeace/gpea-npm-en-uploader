@@ -69,6 +69,10 @@ const enUpdateTmplHeaderFooter = async function (driver, settings, buildDir) {
 		throw new Error(`Cannot resolve header and footer from file ${path.join(buildDir, 'index.html')}`)
 	}
 
+	// patch html v=\d into current timestamp
+	header = header.replace(/v=\d+/g, "v="+(new Date).getTime())
+	footer = footer.replace(/v=\d+/g, "v="+(new Date).getTime())
+
 	// open the edit URL
 	await driver.get(`https://www.e-activist.com/index.html#pages/${settings.enPageId}/edit`);
 

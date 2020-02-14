@@ -1,26 +1,25 @@
 
 # gpea-npm-en-uploader
 
-As webbie in TW and HK, we build the donation page or petition page on the Engaging Network all the time. While we building and testing, we have to manually upload all our files to FTP and update the template HTML on the Engaging Network. It's realy annoying to doing these steps.
+As webbie in TW and HK, we build the donation page or petition page on the Engaging Network all the time. While we are building and testing, we have to manually upload all our files to FTP and update the template HTML on the Engaging Network. It isn't enjoyable to do these steps.
 
-So I build this tools, it helps you deploy your code happyily and confently. The main feature is:
+So I build this tools, it helps you deploy your code happily and confidently. The main feature is:
 
 1. Upload all the `build` folder to FTP or SFTP.
 2. Automatically update the HTML on the EN.
 
-	* Extract the header and footer from `build/index.html`.
-	* Patch the `v=12345` with version code over all the `index.html` file.
-	* Update the header and footer part of the target en page.
+    * Extract the header and footer from `build/index.html`.
+    * Patch the `v=12345` with version code over all the `index.html` file.
+    * Update the header and footer part of the target en page.
 
-3. 	Automatically update the `email.html` as Tahnk you email.
-
+3. Automatically update the `email.html` as Thank you email.
 
 ## Installation
 
 
 #### Install lftp
 
-This script use `lftp` to upload. You have to install it. (If you ask me why don't you use node version, the answer is all the `ssh2` based solution doesn't fit TW sftp. It just doesn't work!)
+This script uses `lftp` to upload. You have to install it. (If you ask me why don't you use node version, the answer is all the `ssh2` based solution doesn't fit TW sftp. It just doesn't work!)
 
 
 Windows (Chocolatey)
@@ -47,8 +46,7 @@ This script use `Selenium` to automate web things.
 
 [Chrome Selenium Driver Download Link](https://www.npmjs.com/package/selenium-webdriver)
 
-You have to download the Selenium `Chrome Webdriver` which match your OS and your Chrome version. Please put `chromedriver` file next by your `package.json` file.
-
+You have to download the Selenium `Chrome Webdriver`, which matches your OS and your Chrome version. Please put the `chromedriver` file next by your `package.json` file.
 
 #### Install via npm
 
@@ -108,3 +106,8 @@ yarn deploy
 # Note
 
 * Do NOT commit `.enuploader` file into git since there's password inside it.
+
+# TODOs
+
+* Update the social share attributes.
+* Refine the setting files. Maybe we can put the password in other safe spaces.

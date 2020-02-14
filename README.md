@@ -14,8 +14,10 @@ So I build this tools, it helps you deploy your code happily and confidently. Th
 
 3. Automatically update the `email.html` as Thank you email.
 
-## Installation
+How it looks like:
+![gpea-npm-en-uploader Demo](demo.gif)
 
+## Installation
 
 #### Install lftp
 

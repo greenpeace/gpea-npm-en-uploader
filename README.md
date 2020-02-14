@@ -8,9 +8,9 @@ So I build this tools, it helps you deploy your code happily and confidently. Th
 1. Upload all the `build` folder to FTP or SFTP.
 2. Automatically update the HTML on the EN.
 
-    * Extract the header and footer from `build/index.html`.
-    * Patch the `v=12345` with version code over all the `index.html` file.
-    * Update the header and footer part of the target en page.
+	* Extract the header and footer from `build/index.html`.
+	* Patch the `v=12345` with version code over all the `index.html` file.
+	* Update the header and footer part of the target en page.
 
 3. Automatically update the `email.html` as Thank you email.
 
@@ -58,10 +58,10 @@ yarn add greenpeace/gpea-npm-en-uploader --dev
 
 ```
 "scripts": {
-  ...
-  "build:en": "PUBLIC_URL=https://your/ftp/path build",
-  "deploy": "yarn run build:en && gpea-npm-en-uploader"
-  ...
+	...
+	"build:en": "PUBLIC_URL=https://your/ftp/path build",
+	"deploy": "yarn run build:en && gpea-npm-en-uploader"
+	...
 },
 ```
 

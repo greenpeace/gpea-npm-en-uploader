@@ -67,34 +67,90 @@ yarn add greenpeace/gpea-npm-en-uploader --dev
 },
 ```
 
+
+# Create the secret file at your home folder
+
+```
+cd ~/
+touch .npm-en-uploader-secret
+chmod 600 .npm-en-uploader-secret
+```
+
+and update the content as following
+
+```
+{
+	"en": {
+		"username": "",
+		"password": ""
+	},
+
+	"ftp_tw": {
+		"host": "change.greenpeace.org.tw",
+		"protocol": "sftp",
+		"port": 22,
+		"username": "",
+		"password": ""
+	},
+
+	"ftp_hk": {
+		"host": "ftp.greenpeace.org.hk",
+		"protocol": "ftp",
+		"port": 21,
+		"username": "",
+		"password": ""
+	}
+}
+```
+
+
 #### Create the config file
 
 Next by your `package.json` file, create a file `.enuploader` with following content
 
 ```
-module.exports = {
-	"buildFolder": "build", // the build folder to update
-	"emailFile": "path/to/email.html", // the email template file to upload to en. or null
-	"enPageId": 55747, // the target page id on the en
+const path = require('path')
+const fs = require('fs');
+const os = require('os');
 
-	"syncFolder": {
-		"doUpdate": true, // false if you don't need to upload your build folder.
-		"protocol": "sftp", // ftp or sftp
-		"port": 22, // 21 or 22
-		"host": "change.greenpeace.org.tw", // "ftp.greenpeace.org.hk",
-		"username": "",
-		"password": "",
-		"remoteDir": "/path/to/remote/folder"
+// read in the secret variables from user's homefolder
+let raw = fs.readFileSync(path.join(os.homedir(), ".npm-en-uploader-secret"));
+let secrets = JSON.parse(raw);
+
+// the target en pageId
+const enPageId = 56257 // EDIT_HERE
+
+// build folder path
+const buildDirPath = path.join(__dirname, "build")
+
+module.exports = {
+	ftp: Object.assign({}, secrets["ftp_tw"], { // EDIT_HERE: Which ftp site you want to use
+		"execute": true,
+		"localDir": buildDirPath,
+		"remoteDir": "/htdocs/2020/petition/zh-tw.2020.climate.taipower", // EDIT_HERE
+	}),
+
+	enBase: Object.assign({}, secrets["en"], {
+		"enPageId": enPageId,
+		"account": "Greenpeace Taiwan" // EDIT_HERE: change this if you have multi acconts
+	}),
+
+	enHeaderFooter: {
+		"execute": true,
+		"enPageId": enPageId,
+		"indexPath": path.join(buildDirPath, 'index.html') // EDIT_HERE: the path to your build/index.html file
 	},
-	"en": {
-		"doUpdate": true, // false if you don't want to update to en
-		"enPageId": 55747,
-		"username": "", // your en username
-		"password": "",
-		"account": "Greenpeace Taiwan" // Greenpeace Taiwan, Greenpeace Korea, Greenpeace Hong Kong
+
+	enThankYouEmail: {
+		"execute": true,
+		"enPageId": enPageId,
+		"mailPath": "src/ThankyouEmail.html", // EDIT_HERE: the path to your email template
 	}
 }
+
 ```
+
+
 
 # Run
 
@@ -107,7 +163,7 @@ yarn deploy
 
 # Note
 
-* Do NOT commit `.enuploader` file into git since there's password inside it.
+* Please keep your secret file .npm-en-uploader-secret safe since it contains the real secrets.
 
 # TODOs
 

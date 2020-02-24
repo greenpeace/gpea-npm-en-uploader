@@ -7,11 +7,12 @@ var FTPS = require('ftps');
  * @param  {string} localDir Local folder to update
  * @param  {string} remoteDir The remote path to upload. If it's not exist, it will be created.
  */
-module.exports = (settings, localDir, remoteDir) => {
+module.exports = function (settings, localDir, remoteDir) {
 	// @see https://github.com/Atinux/node-ftps for arguments
 	var ftps = new FTPS(settings);
 
 	console.info(`Sync from \`${localDir}\` to \`${settings.protocol}://${settings.username}@${settings.host}:${remoteDir}\``)
+
 	ftps.mirror({
 			localDir: localDir,
 			remoteDir: settings.remoteDir,

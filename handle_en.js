@@ -9,6 +9,10 @@ const LONG_WAIT = 30*1000
 const sleep = sutils.sleep
 const controlKey = sutils.controlKey
 
+const patchVersionArg = (s) => {
+	return s.replace(/v=\d+/g, "v="+(new Date).getTime())
+}
+
 /**
  * Login to Engaging network
  *
@@ -55,23 +59,38 @@ const enlogin = async function (driver, settings) {
  * @param  {object} settings [description]
  * @param  {string} buildDir The dir path to the folder which contains the index.html file
  */
-const enUpdateTmplHeaderFooter = async function (driver, settings, buildDir) {
+const enUpdateTmplHeaderFooter = async function (driver, settings, indexFilePath) {
 	console.log("Start to upadte the header and footer")
 	console.log("Fetching header and footer from build folder")
 
-	let content = fs.readFileSync(path.join(buildDir, 'index.html'), 'utf8');
+	let content = fs.readFileSync(indexFilePath, 'utf8');
 	let matches = content.match(/((.|[\r\n])*)(<form[^<]+en__component.*form>)((.|[\r\n])*)/)
 	let header, footer
 	if (matches) {
 		header = matches[1]
 		footer = matches[4]
 	} else {
-		throw new Error(`Cannot resolve header and footer from file ${path.join(buildDir, 'index.html')}`)
+		throw new Error(`Cannot resolve header and footer from file ${indexFilePath}`)
 	}
 
+
+	// without regexp
+	matches = content.match(/(<form[^<]+en__component.*form>)/)
+	if (matches) {
+		let tokens = content.split(matches[1])
+
+		if (tokens.length==2) {
+			header = tokens[0]
+			footer = tokens[1]
+		}
+	}
+
+	// console.log('header', header)
+	// console.log('footer', footer)
+
 	// patch html v=\d into current timestamp
-	header = header.replace(/v=\d+/g, "v="+(new Date).getTime())
-	footer = footer.replace(/v=\d+/g, "v="+(new Date).getTime())
+	header = patchVersionArg(header)
+	footer = patchVersionArg(footer)
 
 	// open the edit URL
 	await driver.get(`https://www.e-activist.com/index.html#pages/${settings.enPageId}/edit`);
@@ -156,6 +175,7 @@ const enUpdateThankyouEmail = async function (driver, settings, emailPath) {
 	console.log("Start to upadte the thank you email content")
 
 	let content = fs.readFileSync((emailPath), 'utf8');
+	content = patchVersionArg(content)
 
 	// open the edit URL
 	await driver.get(`https://www.e-activist.com/index.html#pages/${settings.enPageId}/edit`);
@@ -245,15 +265,21 @@ const enUpdateThankyouEmail = async function (driver, settings, emailPath) {
 	console.log("All Done.")
 }
 
-module.exports = async function ({settings, buildDir, emailPath}) {
-	let river
+module.exports = async function (settings) {
+	let driver
 
 	try {
 		driver = await new Builder().forBrowser('chrome').build();
 
-		await enlogin(driver, settings)
-		await enUpdateTmplHeaderFooter(driver, settings, buildDir)
-		await enUpdateThankyouEmail(driver, settings, emailPath)
+		await enlogin(driver, settings.enBase)
+
+		if (settings.enHeaderFooter.execute) {
+			await enUpdateTmplHeaderFooter(driver, settings.enHeaderFooter, settings.enHeaderFooter.indexPath)
+		}
+
+		if (settings.enThankYouEmail.execute) {
+			await enUpdateThankyouEmail(driver, settings.enThankYouEmail, settings.enThankYouEmail.mailPath)
+		}
 	} finally {
 		if (driver) {
 			await sleep(3*1000)

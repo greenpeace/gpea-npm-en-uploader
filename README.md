@@ -68,7 +68,7 @@ yarn add greenpeace/gpea-npm-en-uploader --dev
 ```
 
 
-# Create the secret file at your home folder
+#### Create the secret file at your home folder
 
 ```
 cd ~/

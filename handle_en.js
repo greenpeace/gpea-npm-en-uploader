@@ -64,18 +64,10 @@ const enUpdateTmplHeaderFooter = async function (driver, settings, indexFilePath
 	console.log("Fetching header and footer from build folder")
 
 	let content = fs.readFileSync(indexFilePath, 'utf8');
-	let matches = content.match(/((.|[\r\n])*)(<form[^<]+en__component.*form>)((.|[\r\n])*)/)
-	let header, footer
-	if (matches) {
-		header = matches[1]
-		footer = matches[4]
-	} else {
-		throw new Error(`Cannot resolve header and footer from file ${indexFilePath}`)
-	}
-
 
 	// without regexp
-	matches = content.match(/(<form[^<]+en__component.*form>)/)
+	header = footer = null
+	matches = content.match(/(<form[^<]+en__component(.|[\r\n])*form>)/)
 	if (matches) {
 		let tokens = content.split(matches[1])
 
@@ -83,6 +75,10 @@ const enUpdateTmplHeaderFooter = async function (driver, settings, indexFilePath
 			header = tokens[0]
 			footer = tokens[1]
 		}
+	}
+
+	if ( !header || !footer) {
+		throw new Error(`Cannot resolve header and footer from file ${indexFilePath}`)
 	}
 
 	// console.log('header', header)
